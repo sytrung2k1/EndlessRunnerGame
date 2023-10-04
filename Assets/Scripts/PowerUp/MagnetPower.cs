@@ -7,9 +7,9 @@ public class MagnetPower : MonoBehaviour
     [SerializeField] private GameObject Player;
     private PlayerController player;
     public static int MagnetEnable = -1;
-    private float remainingPowerTime = 0f;
 
-    public float maxPowerTime = 10f;
+    private float maxPowerTime;
+    
     private UIManager uIManager;
     public GameObject magnetParticles;
 
@@ -18,6 +18,8 @@ public class MagnetPower : MonoBehaviour
     {
         uIManager = FindObjectOfType<UIManager>();
         player = FindObjectOfType<PlayerController>();
+
+        maxPowerTime = GameManager.gameManager.GetPowerUpBase(0).GetCurrentMaxTime();
     }
 
     // Update is called once per frame
@@ -28,15 +30,15 @@ public class MagnetPower : MonoBehaviour
             if (!uIManager.magnetImage.activeInHierarchy)
             {
                 uIManager.magnetImage.SetActive(true);
-                remainingPowerTime = maxPowerTime;
+                player.remainingPowerTimeMagnet = maxPowerTime;
                 magnetParticles.SetActive(true);
             }
 
-            if(remainingPowerTime > 0)
+            if(player.remainingPowerTimeMagnet > 0)
             {
                 transform.position = Player.transform.position;
-                remainingPowerTime -= Time.deltaTime;
-                uIManager.UpdateMagnetTime(Mathf.CeilToInt(remainingPowerTime));
+                player.remainingPowerTimeMagnet -= Time.deltaTime;
+                uIManager.UpdateMagnetTime(Mathf.CeilToInt(player.remainingPowerTimeMagnet));
             }
             else
             {
@@ -53,5 +55,4 @@ public class MagnetPower : MonoBehaviour
             }
         }
     }
-
 }

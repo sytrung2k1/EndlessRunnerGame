@@ -17,6 +17,7 @@ public class PlayerData
     public int[] currentProgress;
     public int[] reward;
     public string[] missionType;
+    public int[] powerUpListLevels;
 }
 
 public class GameManager : MonoBehaviour
@@ -27,6 +28,7 @@ public class GameManager : MonoBehaviour
 
     private string filePath;
     private MissionBase[] missions;
+    private PowerUpBase[] powerUps;
 
     private void Awake()
     {
@@ -42,10 +44,12 @@ public class GameManager : MonoBehaviour
 
         filePath = Application.persistentDataPath + "/playerInfo.dat";
 
-        missions = new MissionBase[2];
+        missions = new MissionBase[4];
+        powerUps = new PowerUpBase[4];
 
         if (File.Exists(filePath))
         {
+            //Debug.Log(filePath);
             Load();
         }
         else
@@ -74,6 +78,13 @@ public class GameManager : MonoBehaviour
                 }
                 missions[i].Created();
             }
+
+            for (int i = 0; i < 4; i++)
+            {
+                GameObject powerUpObject = new GameObject("PowerUpObject");
+                powerUps[i] = powerUpObject.AddComponent<PowerUpBase>(); ;
+                powerUps[i].Created();
+            }
         }
     }
 
@@ -86,19 +97,22 @@ public class GameManager : MonoBehaviour
 
         data.highScore = highScore;
         data.coins = coins;
-        data.max = new int[2];
-        data.progress = new int[2];
-        data.reward = new int[2];
-        data.currentProgress = new int[2];
-        data.missionType = new string[2];
+        data.max = new int[4];
+        data.progress = new int[4];
+        data.reward = new int[4];
+        data.currentProgress = new int[4];
+        data.missionType = new string[4];
+        data.powerUpListLevels = new int[4];
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 4; i++)
         {
             data.max[i] = missions[i].max;
             data.progress[i] = missions[i].progress;
             data.reward[i] = missions[i].reward;
             data.currentProgress[i] = missions[i].currentProgress;
             data.missionType[i] = missions[i].missionType.ToString();
+            
+            data.powerUpListLevels[i] = powerUps[i].currentLevel;
         }
 
         binary.Serialize(file, data);
@@ -116,7 +130,7 @@ public class GameManager : MonoBehaviour
         highScore = data.highScore;
         coins = data.coins;
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 4; i++)
         {
             GameObject newMission = new GameObject("Mission" + i);
             newMission.transform.SetParent(transform);
@@ -145,6 +159,10 @@ public class GameManager : MonoBehaviour
             missions[i].progress = data.progress[i];
             missions[i].reward = data.reward[i];
             missions[i].currentProgress = data.currentProgress[i];
+
+            GameObject powerUpObject = new GameObject("PowerUpObject");
+            powerUps[i] = powerUpObject.AddComponent<PowerUpBase>();
+            powerUps[i].currentLevel = data.powerUpListLevels[i];
         }
     }
 
@@ -175,14 +193,24 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("MissionScene");
     }
 
+    public void Shop()
+    {
+        SceneManager.LoadScene("ShopScene");
+    }
+
     public MissionBase GetMission(int index)
     {
         return missions[index];
     }
 
+    public PowerUpBase GetPowerUpBase(int i)
+    {
+        return powerUps[i];
+    }
+
     public void StartMissions()
     {
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 4; i++)
         {
             missions[i].RunStart();
         }

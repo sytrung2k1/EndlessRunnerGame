@@ -32,6 +32,6 @@ public class SingleRunMission : MissionBase
     {
         if (player == null)
             return;
-        progress = (int)player.score;
+        progress = (int)player.distance;
     }
 }

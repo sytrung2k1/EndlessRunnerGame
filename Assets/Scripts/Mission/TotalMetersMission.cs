@@ -32,6 +32,6 @@ public class TotalMetersMission : MissionBase
     {
         if (player == null)
             return;
-        currentProgress = (int)player.score;
+        currentProgress = (int)player.distance;
     }
 }

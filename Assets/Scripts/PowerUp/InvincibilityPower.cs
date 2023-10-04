@@ -8,16 +8,17 @@ public class InvincibilityPower : MonoBehaviour
     private PlayerController player;
 
     public static int InvincibilityEnable = -1;
-    public float maxPowerTime = 10f;
     public GameObject invincibilityParticles;
 
-    private float remainingPowerTime = 0f;
+    private float maxPowerTime;
 
     // Start is called before the first frame update
     void Start()
     {
         uIManager = FindObjectOfType<UIManager>();
         player = FindObjectOfType<PlayerController>();
+
+        maxPowerTime = GameManager.gameManager.GetPowerUpBase(1).GetCurrentMaxTime();
     }
 
     // Update is called once per frame
@@ -28,15 +29,15 @@ public class InvincibilityPower : MonoBehaviour
             if (!uIManager.invincibilityImage.activeInHierarchy)
             {
                 uIManager.invincibilityImage.SetActive(true);
-                remainingPowerTime = maxPowerTime;
+                player.remainingPowerTimeInvincibility = maxPowerTime;
                 invincibilityParticles.SetActive(true);
             }
 
-            if (remainingPowerTime > 0)
+            if (player.remainingPowerTimeInvincibility > 0)
             {
                 player.SetInvincibility(true);
-                remainingPowerTime -= Time.deltaTime;
-                uIManager.UpdateInvincibilityTime(Mathf.CeilToInt(remainingPowerTime));
+                player.remainingPowerTimeInvincibility -= Time.deltaTime;
+                uIManager.UpdateInvincibilityTime(Mathf.CeilToInt(player.remainingPowerTimeInvincibility));
             }
             else
             {

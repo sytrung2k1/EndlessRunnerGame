@@ -32,7 +32,7 @@ public class MissionMenu : MonoBehaviour
 
     public void SetMission()
     {
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 4; i++)
         {
             MissionBase mission = GameManager.gameManager.GetMission(i);
             missionDescription[i].text = mission.GetMissionDescription();

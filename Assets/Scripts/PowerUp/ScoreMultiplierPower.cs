@@ -8,16 +8,17 @@ public class ScoreMultiplierPower : MonoBehaviour
     private UIManager uIManager;
 
     public static int ScoreMultiplierEnable = -1;
-    public float maxPowerTime = 10f;
     public GameObject MultiplierParticles;
 
-    private float remainingPowerTime = 0f;
+    private float maxPowerTime;
 
     // Start is called before the first frame update
     void Start()
     {
         player = FindObjectOfType<PlayerController>();
         uIManager = FindObjectOfType<UIManager>();
+
+        maxPowerTime = GameManager.gameManager.GetPowerUpBase(2).GetCurrentMaxTime();
     }
 
     // Update is called once per frame
@@ -28,15 +29,15 @@ public class ScoreMultiplierPower : MonoBehaviour
             if (!uIManager.scoreMultiplierImage.activeInHierarchy)
             {
                 uIManager.scoreMultiplierImage.SetActive(true);
-                remainingPowerTime = maxPowerTime;
+                player.remainingPowerTimeScoreMultiplier = maxPowerTime;
                 MultiplierParticles.SetActive(true);
             }
 
-            if(remainingPowerTime > 0)
+            if(player.remainingPowerTimeScoreMultiplier > 0)
             {
                 player.SetScoreMultiplier(2);
-                remainingPowerTime -= Time.deltaTime;
-                uIManager.UpdateScoreMultiplierTime(Mathf.CeilToInt(remainingPowerTime));
+                player.remainingPowerTimeScoreMultiplier -= Time.deltaTime;
+                uIManager.UpdateScoreMultiplierTime(Mathf.CeilToInt(player.remainingPowerTimeScoreMultiplier));
             }
             else
             {

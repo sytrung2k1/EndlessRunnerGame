@@ -21,7 +21,7 @@ public class Menu : MonoBehaviour
 
     public void UpdateBestScore(int score)
     {
-        bestScore.text = "Best Score: " + score;
+        bestScore.text = "Best Score: " + score.ToString();
     }
 
     public void StartRun()
@@ -32,5 +32,10 @@ public class Menu : MonoBehaviour
     public void Mission()
     {
         GameManager.gameManager.Mission();
+    }
+
+    public void Shop()
+    {
+        GameManager.gameManager.Shop();
     }
 }

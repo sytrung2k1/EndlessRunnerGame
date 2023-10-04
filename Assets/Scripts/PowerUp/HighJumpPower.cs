@@ -8,16 +8,17 @@ public class HighJumpPower : MonoBehaviour
     private UIManager uIManager;
 
     public static int HighJumpEnable = -1;
-    public float maxPowerTime = 10f;
     public GameObject HighJumpParticles;
 
-    private float remainingPowerTime = 0f;
+    private float maxPowerTime;
 
     // Start is called before the first frame update
     void Start()
     {
         player = FindObjectOfType<PlayerController>();
         uIManager = FindObjectOfType<UIManager>();
+
+        maxPowerTime = GameManager.gameManager.GetPowerUpBase(3).GetCurrentMaxTime();
     }
 
     // Update is called once per frame
@@ -28,15 +29,15 @@ public class HighJumpPower : MonoBehaviour
             if (!uIManager.highJumpImage.activeInHierarchy)
             {
                 uIManager.highJumpImage.SetActive(true);
-                remainingPowerTime = maxPowerTime;
+                player.remainingPowerTimeHighJump = maxPowerTime;
                 HighJumpParticles.SetActive(true);
             }
 
-            if (remainingPowerTime > 0)
+            if (player.remainingPowerTimeHighJump > 0)
             {
                 player.SetJumpHeight(3);
-                remainingPowerTime -= Time.deltaTime;
-                uIManager.UpdateHighJumpTime(Mathf.CeilToInt(remainingPowerTime));
+                player.remainingPowerTimeHighJump -= Time.deltaTime;
+                uIManager.UpdateHighJumpTime(Mathf.CeilToInt(player.remainingPowerTimeHighJump));
             }
             else
             {

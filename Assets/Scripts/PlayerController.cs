@@ -35,10 +35,32 @@ public class PlayerController : MonoBehaviour
     public int coins;
     [HideInInspector]
     public float score;
-    private float distance;
+    [HideInInspector]
+    public float distance;
     private float previousSpeed;
     private int scoreMultiplier = 1;
     private bool isGameOver = false;
+
+    private bool isSwipping = false;
+    private Vector2 startingTouch;
+
+    //Power Up Time
+    [HideInInspector]
+    public float remainingPowerTimeMagnet = 0f;
+    [HideInInspector]
+    public float remainingPowerTimeInvincibility = 0f;
+    [HideInInspector]
+    public float remainingPowerTimeScoreMultiplier = 0f;
+    [HideInInspector]
+    public float remainingPowerTimeHighJump = 0f;
+
+    //Sounds
+    public AudioSource jumpSound;
+    public AudioSource slideSound;
+    public AudioSource powerUpCollectedSound;
+    public AudioSource coinCollectedSound;
+    public AudioSource hitSound;
+    public AudioSource deathSound;
 
     // Start is called before the first frame update
     void Start()
@@ -89,6 +111,52 @@ public class PlayerController : MonoBehaviour
             Slide();
         }
 
+        if (Input.touchCount == 1)
+        {
+            if (isSwipping)
+            {
+                Vector2 diff = Input.GetTouch(0).position - startingTouch;
+                diff = new Vector2(diff.x / Screen.width, diff.y / Screen.width);
+                if (diff.magnitude > 0.01f)
+                {
+                    if (Mathf.Abs(diff.y) > Mathf.Abs(diff.x))
+                    {
+                        if (diff.y < 0)
+                        {
+                            Slide();
+                        }
+                        else
+                        {
+                            Jump();
+                        }
+                    }
+                    else
+                    {
+                        if (diff.x < 0)
+                        {
+                            ChangeLane(-1);
+                        }
+                        else
+                        {
+                            ChangeLane(1);
+                        }
+                    }
+
+                    isSwipping = false;
+                }
+            }
+
+            if (Input.GetTouch(0).phase == TouchPhase.Began)
+            {
+                startingTouch = Input.GetTouch(0).position;
+                isSwipping = true;
+            }
+            else if (Input.GetTouch(0).phase == TouchPhase.Ended)
+            {
+                isSwipping = false;
+            }
+
+        }
 
 
         if (jumping)
@@ -158,6 +226,8 @@ public class PlayerController : MonoBehaviour
             anim.SetFloat("JumpSpeed", speed / jumpLength);
             anim.SetBool("Jump", true);
             jumping = true;
+
+            jumpSound.Play();
         }
     }
 
@@ -175,16 +245,25 @@ public class PlayerController : MonoBehaviour
             newSize.y = newSize.y / 3;
             boxCollider.size = newSize;
             sliding = true;
+
+            slideSound.Play();
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if(other.gameObject.layer == LayerMask.NameToLayer("Powerup"))
+        {
+            powerUpCollectedSound.Play();
+        }
+
         if (other.CompareTag("Coin"))
         {
             coins++;
             uIManager.UpdateCoinText(coins);
             other.transform.parent.gameObject.SetActive(false);
+
+            coinCollectedSound.Play();
         }
 
         if (invincible)
@@ -200,8 +279,10 @@ public class PlayerController : MonoBehaviour
             anim.SetTrigger("Hit");
             if(currentLife <= 0)
             {
+                deathSound.Play();
+
                 GameManager.gameManager.coins += coins;
-                if (GameManager.gameManager.highScore < score)
+                if (GameManager.gameManager.highScore < (int)score)
                 {
                     GameManager.gameManager.highScore = (int)score;
                 }
@@ -214,6 +295,8 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
+                hitSound.Play();
+
                 StartCoroutine(Blinking(invincibleTime));
             }
         }

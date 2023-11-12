@@ -211,6 +211,7 @@ public class PlayerController : MonoBehaviour
 
     void ChangeLane(int direction)
     {
+        if (!canMove) return;
         int targetLane = currentLane + direction;
         if (targetLane < 0 || targetLane > 2)
             return;
@@ -220,6 +221,7 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
+        if (!canMove) return;
         if (!jumping)
         {
             jumpStart = transform.position.z;
@@ -233,6 +235,7 @@ public class PlayerController : MonoBehaviour
 
     void Slide()
     {
+        if (!canMove) return;
         if (!jumping && !sliding)
         {
             slideStart = transform.position.z;
@@ -383,5 +386,10 @@ public class PlayerController : MonoBehaviour
     public bool GetGameOver()
     {
         return isGameOver;
+    }
+
+    public bool CheckCanMove()
+    {
+        return canMove;
     }
 }

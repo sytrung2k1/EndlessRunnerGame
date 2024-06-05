@@ -38,4 +38,14 @@ public class Menu : MonoBehaviour
     {
         GameManager.gameManager.Shop();
     }
+
+    public void Settings()
+    {
+        GameManager.gameManager.Settings();
+    }
+
+    public void Controller()
+    {
+        GameManager.gameManager.Controller();
+    }
 }

@@ -39,7 +39,10 @@ public class PlayerController : MonoBehaviour
     public float distance;
     private float previousSpeed;
     private int scoreMultiplier = 1;
-    private bool isGameOver = false;
+    [HideInInspector]
+    static private bool isGameStart = false;
+    [HideInInspector]
+    static private bool isGameOver = false;
 
     private bool isSwipping = false;
     private Vector2 startingTouch;
@@ -65,6 +68,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        isGameStart = true;
         canMove = false;
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
@@ -78,6 +82,7 @@ public class PlayerController : MonoBehaviour
         GameManager.gameManager.StartMissions();
 
         // Chờ 3 giây trước khi bắt đầu chạy
+        StartCoroutine(SendStartPacket());
         StartCoroutine(StartRunning());
     }
 
@@ -93,22 +98,43 @@ public class PlayerController : MonoBehaviour
             uIManager.UpdateDistanceText((int)distance);
         }
 
-
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (GameManager.gameManager.controlByCamera)
         {
-            ChangeLane(-1);
+            if (ConfirmAction.LR_Action == "Left")
+            {
+                ChangeLane(-1);
+            }
+            else if (ConfirmAction.LR_Action == "Right")
+            {
+                ChangeLane(1);
+            }
+            if (ConfirmAction.JD_Action == "Jump")
+            {
+                Jump();
+            }
+            else if (ConfirmAction.JD_Action == "Down")
+            {
+                Slide();
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        else
         {
-            ChangeLane(1);
-        }
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            Jump();
-        }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            Slide();
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                ChangeLane(-1);
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                ChangeLane(1);
+            }
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                Jump();
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                Slide();
+            }
         }
 
         if (Input.touchCount == 1)
@@ -201,6 +227,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    IEnumerator SendStartPacket()
+    {
+        // Gửi gói tin "START" mỗi 0.1 giây trong 3 giây
+        for (int i = 0; i < 30; i++)
+        {
+            Communication.communication.SendData("START");
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
     IEnumerator StartRunning()
     {
         yield return new WaitForSeconds(3f);
@@ -222,7 +258,7 @@ public class PlayerController : MonoBehaviour
     void Jump()
     {
         if (!canMove) return;
-        if (!jumping)
+        if (!jumping && !sliding)
         {
             jumpStart = transform.position.z;
             anim.SetFloat("JumpSpeed", speed / jumpLength);
@@ -290,6 +326,7 @@ public class PlayerController : MonoBehaviour
                     GameManager.gameManager.highScore = (int)score;
                 }
                 GameManager.gameManager.Save();
+                isGameStart = false;
                 isGameOver = true;
                 speed = 0;
                 anim.SetBool("Dead", true);
@@ -383,9 +420,19 @@ public class PlayerController : MonoBehaviour
         jumpHeight = value;
     }
 
+    static public bool GetGameStart()
+    {
+        return isGameStart;
+    }
+
     public bool GetGameOver()
     {
         return isGameOver;
+    }
+
+    static public void SetGameOver()
+    {
+        isGameOver = true;
     }
 
     public bool CheckCanMove()

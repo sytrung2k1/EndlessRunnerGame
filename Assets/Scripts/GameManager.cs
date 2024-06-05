@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,18 +25,31 @@ public class GameManager : MonoBehaviour
     public static GameManager gameManager;
     public int coins;
     public int highScore;
+    [HideInInspector]
+    public bool controlByCamera = false;
+    [HideInInspector]
+    public bool appPython = false;
+    public bool readyControl = false;
+
+    public GameObject loadingPanel;
+    public GameObject pausePanel;
 
     private string filePath;
     private MissionBase[] missions;
     private PowerUpBase[] powerUps;
 
+    [HideInInspector]
+    public float music = 0.5f;
+    [HideInInspector]
+    public float sound = 0.5f;
+
     private void Awake()
     {
-        if(gameManager == null)
+        if (gameManager == null)
         {
             gameManager = this;
         }
-        else if(gameManager!= this)
+        else if (gameManager != this)
         {
             Destroy(gameObject);
         }
@@ -169,13 +182,35 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Transform canvasMenuTransform = GameObject.Find("Canvas").transform;
+        Transform pauseMenuPanelTransform = canvasMenuTransform.Find("Loading");
+        loadingPanel = pauseMenuPanelTransform.gameObject;
+        loadingPanel.SetActive(true);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (readyControl)
+        {
+            loadingPanel = GameObject.Find("Loading");
+            if (loadingPanel != null)
+            {
+                loadingPanel.SetActive(false);
+            }
+        }
+    }
+
+    public void OnPauseMenu()
+    {
+        Transform canvasMenuTransform = GameObject.Find("CanvasMenu").transform;
+        Transform pauseMenuPanelTransform = canvasMenuTransform.Find("PauseMenuPanel");
+        pausePanel = pauseMenuPanelTransform.gameObject;
+        if (pausePanel != null)
+        {
+            pausePanel.SetActive(true);
+            Time.timeScale = 0;
+        }
     }
 
     public void StartRun()
@@ -196,6 +231,16 @@ public class GameManager : MonoBehaviour
     public void Shop()
     {
         SceneManager.LoadScene("ShopScene");
+    }
+
+    public void Settings()
+    {
+        SceneManager.LoadScene("SettingsScene");
+    }
+
+    public void Controller()
+    {
+        SceneManager.LoadScene("ControllerScene");
     }
 
     public MissionBase GetMission(int index)

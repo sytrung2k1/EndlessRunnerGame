@@ -216,7 +216,7 @@ GameObject:
   - component: {fileID: 90466019}
   - component: {fileID: 90466018}
   m_Layer: 5
-  m_Name: StartRunButton
+  m_Name: StartButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -241,7 +241,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 60}
-  m_SizeDelta: {x: 150, y: 40}
+  m_SizeDelta: {x: 200, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &90466018
 MonoBehaviour:
@@ -447,7 +447,7 @@ PrefabInstance:
     - target: {fileID: 5538975540585654633, guid: 428bc5eb49783a94e8d96b498f59593d,
         type: 3}
       propertyPath: m_Text
-      value: Invincibilty
+      value: Invincible
       objectReference: {fileID: 0}
     - target: {fileID: 7128005431634623277, guid: 428bc5eb49783a94e8d96b498f59593d,
         type: 3}
@@ -736,8 +736,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 25, y: -25}
-  m_SizeDelta: {x: 40, y: 40}
+  m_AnchoredPosition: {x: 30, y: -30}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &574075596
 MonoBehaviour:
@@ -1052,6 +1052,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coins: 0
   highScore: 0
+  controlByCamera: 0
+  appPython: 0
+  readyControl: 0
+  loadingPanel: {fileID: 0}
+  pausePanel: {fileID: 0}
+  music: 0.5
+  sound: 0.5
 --- !u!1 &754879931
 GameObject:
   m_ObjectHideFlags: 0
@@ -1088,7 +1095,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -50}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 200, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &754879933
 MonoBehaviour:
@@ -1112,7 +1119,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 30
+    m_FontSize: 40
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 0
@@ -1399,7 +1406,7 @@ PrefabInstance:
     - target: {fileID: 5538975540585654633, guid: 428bc5eb49783a94e8d96b498f59593d,
         type: 3}
       propertyPath: m_Text
-      value: Coin Magnet
+      value: Magnet
       objectReference: {fileID: 0}
     - target: {fileID: 7128005431886096875, guid: 428bc5eb49783a94e8d96b498f59593d,
         type: 3}
@@ -1660,7 +1667,7 @@ RectTransform:
   m_GameObject: {fileID: 1052855922}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 980082965}
@@ -2076,7 +2083,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 20
+    m_FontSize: 30
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 0
@@ -2136,7 +2143,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 20
+    m_FontSize: 30
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 1
@@ -2173,8 +2180,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 50, y: -20}
-  m_SizeDelta: {x: 100, y: 40}
+  m_AnchoredPosition: {x: 100, y: -25}
+  m_SizeDelta: {x: 200, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1937875040 stripped
 GameObject:
@@ -2218,8 +2225,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -100, y: -20}
-  m_SizeDelta: {x: 40, y: 40}
+  m_AnchoredPosition: {x: -200, y: -30}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2071298944
 MonoBehaviour:

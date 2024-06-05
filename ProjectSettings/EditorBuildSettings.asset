@@ -10,6 +10,9 @@ EditorBuildSettings:
     guid: 546260a5036cdbb4386644f7f8d2882c
   - enabled: 1
     path: Assets/Scenes/GameScene.unity
+    guid: 52c617cebc725ef4faf5d27fc106be2b
+  - enabled: 0
+    path: Assets/Scenes/OldGameScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
     path: Assets/Scenes/MissionScene.unity
@@ -17,7 +20,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ShopScene.unity
     guid: a468520cffa3d1f409073a9e712ceda1
+  - enabled: 1
+    path: Assets/Scenes/SettingsScene.unity
+    guid: a74f53fad893a1342841e1af44a95c55
+  - enabled: 1
+    path: Assets/Scenes/ControllerScene.unity
+    guid: 37cb941cc7978454d986c650a2d0254d
   m_configObjects:
     AddressableAssetSettings: {fileID: 0}
-    com.unity.addressableassets: {fileID: 11400000, guid: d9bda8247ce91cd41ab85a8518a7ee55,
+    com.unity.addressableassets: {fileID: 11400000, guid: 6cef953e817840845987cc96cdff3f53,
       type: 2}

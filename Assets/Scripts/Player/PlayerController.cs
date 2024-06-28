@@ -39,10 +39,8 @@ public class PlayerController : MonoBehaviour
     public float distance;
     private float previousSpeed;
     private int scoreMultiplier = 1;
-    [HideInInspector]
-    static private bool isGameStart = false;
-    [HideInInspector]
-    static private bool isGameOver = false;
+    private bool isGameOver = false;
+    private bool isGameStart = false;
 
     private bool isSwipping = false;
     private Vector2 startingTouch;
@@ -64,6 +62,9 @@ public class PlayerController : MonoBehaviour
     public AudioSource coinCollectedSound;
     public AudioSource hitSound;
     public AudioSource deathSound;
+
+    private string lastLC_Action = "";
+    private string lastJD_Action = "";
 
     // Start is called before the first frame update
     void Start()
@@ -89,7 +90,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(canMove)
+        if (canMove)
         {
             score += Time.deltaTime * speed * scoreMultiplier;
             uIManager.UpdateScoreText((int)score);
@@ -100,21 +101,31 @@ public class PlayerController : MonoBehaviour
 
         if (GameManager.gameManager.controlByCamera)
         {
-            if (ConfirmAction.LR_Action == "Left")
+            if (ConfirmAction.LR_Action != lastLC_Action)
             {
-                ChangeLane(-1);
+                lastLC_Action = ConfirmAction.LR_Action;
+                if (ConfirmAction.LR_Action == "Left")
+                {
+                    print("Sang trai 1 lan");
+                    ChangeLane(-1);
+                }
+                else if (ConfirmAction.LR_Action == "Right")
+                {
+                    ChangeLane(1);
+                }
             }
-            else if (ConfirmAction.LR_Action == "Right")
+
+            if (ConfirmAction.JD_Action != lastJD_Action)
             {
-                ChangeLane(1);
-            }
-            if (ConfirmAction.JD_Action == "Jump")
-            {
-                Jump();
-            }
-            else if (ConfirmAction.JD_Action == "Down")
-            {
-                Slide();
+                lastJD_Action = ConfirmAction.JD_Action;
+                if (ConfirmAction.JD_Action == "Jump")
+                {
+                    Jump();
+                }
+                else if (ConfirmAction.JD_Action == "Down")
+                {
+                    Slide();
+                }
             }
         }
         else
@@ -291,7 +302,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.layer == LayerMask.NameToLayer("Powerup"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Powerup"))
         {
             powerUpCollectedSound.Play();
         }
@@ -316,7 +327,7 @@ public class PlayerController : MonoBehaviour
             currentLife--;
             uIManager.UpdateLives(currentLife);
             anim.SetTrigger("Hit");
-            if(currentLife <= 0)
+            if (currentLife <= 0)
             {
                 deathSound.Play();
 
@@ -354,7 +365,7 @@ public class PlayerController : MonoBehaviour
         while (timer < time)
         {
             yield return new WaitForSeconds(blinkPeriod);
-            timer += blinkPeriod; 
+            timer += blinkPeriod;
             enabled = !enabled;
             model.SetActive(enabled);
         }
@@ -388,7 +399,7 @@ public class PlayerController : MonoBehaviour
     public void IncreaseSpeed()
     {
         speed *= 1.1f;
-        if(speed >= maxSpeed)
+        if (speed >= maxSpeed)
         {
             speed = maxSpeed;
         }
@@ -420,7 +431,7 @@ public class PlayerController : MonoBehaviour
         jumpHeight = value;
     }
 
-    static public bool GetGameStart()
+    public bool GetGameStart()
     {
         return isGameStart;
     }
@@ -430,7 +441,7 @@ public class PlayerController : MonoBehaviour
         return isGameOver;
     }
 
-    static public void SetGameOver()
+    public void SetGameOver()
     {
         isGameOver = true;
     }

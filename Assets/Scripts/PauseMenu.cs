@@ -7,6 +7,12 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     public GameObject pausePanel;
+    private PlayerController playerController;
+
+    private void Start()
+    {
+        playerController = FindObjectOfType<PlayerController>();
+    }
 
     public void Pause()
     {
@@ -23,7 +29,7 @@ public class PauseMenu : MonoBehaviour
     public void Exit()
     {
         Time.timeScale = 1;
-        PlayerController.SetGameOver();
+        playerController.SetGameOver();
         SceneManager.LoadScene("StartScene");
     }
 

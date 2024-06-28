@@ -213,6 +213,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void OffPauseMenu()
+    {
+        Transform canvasMenuTransform = GameObject.Find("CanvasMenu").transform;
+        Transform pauseMenuPanelTransform = canvasMenuTransform.Find("PauseMenuPanel");
+        pausePanel = pauseMenuPanelTransform.gameObject;
+        if (pausePanel != null)
+        {
+            pausePanel.SetActive(false);
+            Time.timeScale = 1;
+        }
+    }
+
     public void StartRun()
     {
         SceneManager.LoadScene("GameScene");

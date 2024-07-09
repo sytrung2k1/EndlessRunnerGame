@@ -44,8 +44,8 @@ public class Menu : MonoBehaviour
         GameManager.gameManager.Settings();
     }
 
-    public void Controller()
+    public void Tutorial()
     {
-        GameManager.gameManager.Controller();
+        GameManager.gameManager.Tutorial();
     }
 }

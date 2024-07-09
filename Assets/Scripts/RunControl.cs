@@ -25,9 +25,9 @@ public class RunControl : MonoBehaviour
     void RunPython()
     {
         ProcessStartInfo start = new ProcessStartInfo();
-        string exePath = Path.Combine(Application.dataPath, "../controller/commu_threading.exe");
-        start.FileName = exePath;
-        /*start.FileName = @"C:\Users\DMX\PycharmProjects\GameControllerByCamera\output\commu_threading\commu_threading.exe"; // Đường dẫn đến file .exe*/
+        /*string exePath = Path.Combine(Application.dataPath, "../controller/commu_threading.exe");
+        start.FileName = exePath;*/
+        start.FileName = @"C:\Users\DMX\PycharmProjects\GameControllerByCamera\output\commu_threading\commu_threading.exe"; // Đường dẫn đến file .exe
         start.UseShellExecute = false; // Không sử dụng shell để thực thi
         start.RedirectStandardOutput = true; // Chuyển hướng đầu ra chuẩn
         Process process = Process.Start(start);

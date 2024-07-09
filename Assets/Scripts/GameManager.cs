@@ -182,9 +182,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Transform canvasMenuTransform = GameObject.Find("Canvas").transform;
-        Transform pauseMenuPanelTransform = canvasMenuTransform.Find("Loading");
-        loadingPanel = pauseMenuPanelTransform.gameObject;
+        Transform canvasTransform = GameObject.Find("Canvas").transform;
+        Transform loadingTransform = canvasTransform.Find("Loading");
+        loadingPanel = loadingTransform.gameObject;
         loadingPanel.SetActive(true);
     }
 
@@ -250,9 +250,9 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("SettingsScene");
     }
 
-    public void Controller()
+    public void Tutorial()
     {
-        SceneManager.LoadScene("ControllerScene");
+        SceneManager.LoadScene("TutorialScene");
     }
 
     public MissionBase GetMission(int index)

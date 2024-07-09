@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour
     private float previousSpeed;
     private int scoreMultiplier = 1;
     private bool isGameOver = false;
+    private bool isGameStart = false;
 
     private bool isSwipping = false;
     private Vector2 startingTouch;
@@ -62,9 +63,13 @@ public class PlayerController : MonoBehaviour
     public AudioSource hitSound;
     public AudioSource deathSound;
 
+    private string lastLC_Action = "";
+    private string lastJD_Action = "";
+
     // Start is called before the first frame update
     void Start()
     {
+        isGameStart = true;
         canMove = false;
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
@@ -78,13 +83,14 @@ public class PlayerController : MonoBehaviour
         GameManager.gameManager.StartMissions();
 
         // Chờ 3 giây trước khi bắt đầu chạy
+        StartCoroutine(SendStartPacket());
         StartCoroutine(StartRunning());
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(canMove)
+        if (canMove)
         {
             score += Time.deltaTime * speed * scoreMultiplier;
             uIManager.UpdateScoreText((int)score);
@@ -93,22 +99,53 @@ public class PlayerController : MonoBehaviour
             uIManager.UpdateDistanceText((int)distance);
         }
 
+        if (GameManager.gameManager.controlByCamera)
+        {
+            if (ConfirmAction.LR_Action != lastLC_Action)
+            {
+                lastLC_Action = ConfirmAction.LR_Action;
+                if (ConfirmAction.LR_Action == "Left")
+                {
+                    print("Sang trai 1 lan");
+                    ChangeLane(-1);
+                }
+                else if (ConfirmAction.LR_Action == "Right")
+                {
+                    ChangeLane(1);
+                }
+            }
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            ChangeLane(-1);
+            if (ConfirmAction.JD_Action != lastJD_Action)
+            {
+                lastJD_Action = ConfirmAction.JD_Action;
+                if (ConfirmAction.JD_Action == "Jump")
+                {
+                    Jump();
+                }
+                else if (ConfirmAction.JD_Action == "Down")
+                {
+                    Slide();
+                }
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        else
         {
-            ChangeLane(1);
-        }
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            Jump();
-        }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            Slide();
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                ChangeLane(-1);
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                ChangeLane(1);
+            }
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                Jump();
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                Slide();
+            }
         }
 
         if (Input.touchCount == 1)
@@ -201,6 +238,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    IEnumerator SendStartPacket()
+    {
+        // Gửi gói tin "START" mỗi 0.1 giây trong 3 giây
+        for (int i = 0; i < 30; i++)
+        {
+            Communication.communication.SendData("START");
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
     IEnumerator StartRunning()
     {
         yield return new WaitForSeconds(3f);
@@ -222,7 +269,7 @@ public class PlayerController : MonoBehaviour
     void Jump()
     {
         if (!canMove) return;
-        if (!jumping)
+        if (!jumping && !sliding)
         {
             jumpStart = transform.position.z;
             anim.SetFloat("JumpSpeed", speed / jumpLength);
@@ -255,7 +302,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.layer == LayerMask.NameToLayer("Powerup"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Powerup"))
         {
             powerUpCollectedSound.Play();
         }
@@ -280,7 +327,7 @@ public class PlayerController : MonoBehaviour
             currentLife--;
             uIManager.UpdateLives(currentLife);
             anim.SetTrigger("Hit");
-            if(currentLife <= 0)
+            if (currentLife <= 0)
             {
                 deathSound.Play();
 
@@ -290,6 +337,7 @@ public class PlayerController : MonoBehaviour
                     GameManager.gameManager.highScore = (int)score;
                 }
                 GameManager.gameManager.Save();
+                isGameStart = false;
                 isGameOver = true;
                 speed = 0;
                 anim.SetBool("Dead", true);
@@ -317,7 +365,7 @@ public class PlayerController : MonoBehaviour
         while (timer < time)
         {
             yield return new WaitForSeconds(blinkPeriod);
-            timer += blinkPeriod; 
+            timer += blinkPeriod;
             enabled = !enabled;
             model.SetActive(enabled);
         }
@@ -351,7 +399,7 @@ public class PlayerController : MonoBehaviour
     public void IncreaseSpeed()
     {
         speed *= 1.1f;
-        if(speed >= maxSpeed)
+        if (speed >= maxSpeed)
         {
             speed = maxSpeed;
         }
@@ -383,9 +431,19 @@ public class PlayerController : MonoBehaviour
         jumpHeight = value;
     }
 
+    public bool GetGameStart()
+    {
+        return isGameStart;
+    }
+
     public bool GetGameOver()
     {
         return isGameOver;
+    }
+
+    public void SetGameOver()
+    {
+        isGameOver = true;
     }
 
     public bool CheckCanMove()
